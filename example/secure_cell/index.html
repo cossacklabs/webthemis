@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Themis Secure Cell Sample</title>
+
+<script type="text/javascript">
+themis_secure_cell_sample = null; // Global application object.
+statusText = 'NO-STATUS';
+
+function moduleDidLoad() {
+    themis_secure_cell_sample = document.getElementById('themis_secure_cell_sample');
+    updateStatus('<b>info:</b>PNACL themis module loaded');
+}
+
+function handleMessage(message_event) {
+    msg=message_event.data;
+    command=msg[0];
+    args=msg.slice(1);
+    if (command == "DISP")
+    {
+	document.getElementById('secret_text').value=args[0];
+	a=1;
+    }
+    else
+    {
+	updateStatus("<b>"+command+":</b>"+args);
+    }
+}
+
+function pageDidLoad() {
+    if (themis_secure_cell_sample == null) {
+	updateStatus('<b>info:</b>loading PNACL themis module...');
+    } else {
+        updateStatus();
+    }
+}
+
+function updateStatus(opt_message) {
+    if (opt_message)
+	statusText = opt_message;
+    var statusField = document.getElementById('status_field');
+    if (statusField) {
+	statusField.innerHTML = statusField.innerHTML+Date.now()+" - "+statusText+"<br>";
+    }
+}
+
+function do_load(){
+    a=document.getElementById('themis_secure_cell_sample');
+    a.postMessage('load '+document.getElementById('username').value+" "+document.getElementById('userpass').value);
+}
+function do_save(){
+    a=document.getElementById('themis_secure_cell_sample');
+    a.postMessage('save '+document.getElementById('username').value+' '+document.getElementById('userpass').value+' '+document.getElementById('secret_text').value);
+}
+</script>
+</head>
+<body onload="pageDidLoad()">
+    <h3>themis_secure_cell_sample</h3>
+    <p>
+    <div id="listener">
+	<script type="text/javascript">
+	    var listener = document.getElementById('listener');
+	    listener.addEventListener('load', moduleDidLoad, true);
+	    listener.addEventListener('message', handleMessage, true);
+	</script>
+	<embed name="nacl_module"
+	    id="themis_secure_cell_sample"
+	    width=0 height=0
+	    src="themis_secure_cell_sample.nmf"
+	    type="application/x-pnacl" />
+    </div>
+    </p>
+    <b>name</b><input id="username"/>
+    <b>pass</b><input type=password id="userpass"/><br>
+    <textarea id="secret_text" rows="10" cols="45"></textarea><br>
+    <button id=load_btn onclick="do_load();">Load</button><button id=save_btn onclick="do_save();">Save</button><br>
+    <b>log:</b> <div id="status_field"></div><br>
+    
+</body>
