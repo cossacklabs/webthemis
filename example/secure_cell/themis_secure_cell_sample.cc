@@ -90,7 +90,7 @@ public:
 	std::string data;
 	message>>operation>>login>>password;
 	if(operation == "load"){
-	     file_thread_.message_loop().PostWork(callback_factory_.NewCallback(&themis_secure_cell_samle_instance::Load, std::string("/")+login+".dat"));
+	     file_thread_.message_loop().PostWork(callback_factory_.NewCallback(&themis_secure_cell_samle_instance::Load, std::string("/")+login+".dat", password));
 	}
 	else if (operation == "save"){
 	    message.ignore(1);
@@ -102,7 +102,7 @@ public:
 		message.getline(a, 1024);
 		(data+="\n")+=a;
 	    }
-	    file_thread_.message_loop().PostWork(callback_factory_.NewCallback(&themis_secure_cell_samle_instance::Save, std::string("/")+login+".dat", data));
+	    file_thread_.message_loop().PostWork(callback_factory_.NewCallback(&themis_secure_cell_samle_instance::Save, std::string("/")+login+".dat", password, data));
 	}
     }
 
@@ -115,9 +115,19 @@ public:
 
     void Save(int32_t /* result */,
             const std::string& file_name,
+	    const std::string& password,
             const std::string& file_contents) {
 	if (!file_system_ready_) {
-	    post("ERROR", "File system is not open");
+	    post("error", "File system is not open");
+	    return;
+	}
+	std::vector<uint8_t> enc_data;
+	try{
+	    themis::secure_cell_seal encrypter(std::vector<uint8_t>(password.data(), password.data()+password.length()));
+	    enc_data=encrypter.encrypt(std::vector<uint8_t>(file_contents.data(), file_contents.data()+file_contents.length())).get();
+	    post("info", "encrypted");
+	}catch(themis::exception& e){
+	    post("error", e.what());
 	    return;
 	}
 	pp::FileRef ref(file_system_, file_name.c_str());
@@ -125,38 +135,38 @@ public:
 
 	int32_t open_result = file.Open(ref, PP_FILEOPENFLAG_WRITE | PP_FILEOPENFLAG_CREATE | PP_FILEOPENFLAG_TRUNCATE, pp::BlockUntilComplete());
 	if (open_result != PP_OK) {
-	    post("ERROR", "File open for write failed");
+	    post("error", "File open for write failed");
 	    return;
 	}
 
 	if (!file_contents.empty()) {
 	    if (file_contents.length() > INT32_MAX) {
-		post("ERROR", "File too big");
+		post("error", "File too big");
 		return;
 	    }
 	    int64_t offset = 0;
 	    int32_t bytes_written = 0;
 	    do {
-		bytes_written = file.Write(offset, file_contents.data() + offset, file_contents.length(), pp::BlockUntilComplete());
+		bytes_written = file.Write(offset, (const char*)(&enc_data[0] + offset), enc_data.size(), pp::BlockUntilComplete());
 		if (bytes_written > 0) {
 		    offset += bytes_written;
 		} else {
-		    post("ERROR", "File write failed");
+		    post("error", "File write failed");
 		    return;
 		}
 	    } while (bytes_written < static_cast<int64_t>(file_contents.length()));
 	}
 	int32_t flush_result = file.Flush(pp::BlockUntilComplete());
 	if (flush_result != PP_OK) {
-	    post("ERROR", "File fail to flush");
+	    post("error", "File fail to flush");
 	    return;
 	}
 	post("info", file_name+" saved succesfully");
     }
 
-    void Load(int32_t /* result */, const std::string& file_name) {
+    void Load(int32_t /* result */, const std::string& file_name, const std::string& password) {
 	if (!file_system_ready_) {
-	    post("ERROR", "File system is not open");
+	    post("error", "File system is not open");
 	    return;
 	}
 	pp::FileRef ref(file_system_, file_name.c_str());
@@ -164,36 +174,44 @@ public:
 
 	int32_t open_result = file.Open(ref, PP_FILEOPENFLAG_READ, pp::BlockUntilComplete());
 	if (open_result == PP_ERROR_FILENOTFOUND) {
-	    post("ERROR", "File not found");
+	    post("error", "File not found");
 	    return;
 	} else if (open_result != PP_OK) {
-	    post("ERROR", "File open for read failed");
+	    post("error", "File open for read failed");
 	    return;
 	}
 	PP_FileInfo info;
 	int32_t query_result = file.Query(&info, pp::BlockUntilComplete());
 	if (query_result != PP_OK) {
-	    post("ERROR", "File query failed");
+	    post("error", "File query failed");
 	    return;
 	}
 	if (info.size > INT32_MAX) {
-	    post("ERROR", "File too big");
+	    post("error", "File too big");
 	    return;
 	}
 
-	std::vector<char> data(info.size);
+	std::vector<uint8_t> data(info.size);
 	int64_t offset = 0;
 	int32_t bytes_read = 0;
 	int32_t bytes_to_read = info.size;
 	while (bytes_to_read > 0) {
-	    bytes_read = file.Read(offset, &data[offset], data.size() - offset, pp::BlockUntilComplete());
+	    bytes_read = file.Read(offset, (char*)(&data[offset]), data.size() - offset, pp::BlockUntilComplete());
 	    if (bytes_read > 0) {
 		offset += bytes_read;
 		bytes_to_read -= bytes_read;
 	    } else if (bytes_read < 0) {
-		post("ERROR", "File read failed");
+		post("error", "File read failed");
 		return;
 	    }
+	}
+	try{
+	    themis::secure_cell_seal encrypter(std::vector<uint8_t>(password.data(), password.data()+password.length()));
+	    data=encrypter.decrypt(data).get();
+	    post("info", "decrypted");
+	}catch(themis::exception& e){
+	    post("error", std::string("decription:")+e.what());
+	    return;
 	}
 	std::string string_data(data.begin(), data.end());
 	post("DISP", string_data);
