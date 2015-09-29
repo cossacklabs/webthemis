@@ -60,4 +60,4 @@ HTTPD_PY := python $(NACL_SDK_ROOT)/tools/httpd.py --no-dir-check
 
 .PHONY: serve
 serve: all
-	$(HTTPD_PY) -C $(CURDIR)
+	$(HTTPD_PY) -C "$(CURDIR)"

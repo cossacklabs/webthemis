@@ -1,0 +1,8 @@
+all: secure_session_test.o
+	clang++ -o secure_session_test -L/home/andrey/progs/libs/boost_1_57_0/stage/lib/   secure_session_test.o -lthemis -lboost_thread -lboost_system
+
+secure_session_test.o:
+	clang++ -c -o secure_session_test.o -I/home/andrey/progs/libs/boost_1_57_0/  secure_session_test.cpp 
+
+run:
+	LD_LIBRARY_PATH=/home/andrey/progs/libs/boost_1_57_0/stage/lib/  ./secure_session_test
