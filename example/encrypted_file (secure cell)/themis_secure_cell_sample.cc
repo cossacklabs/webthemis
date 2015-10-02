@@ -135,7 +135,9 @@ public:
 
 	int32_t open_result = file.Open(ref, PP_FILEOPENFLAG_WRITE | PP_FILEOPENFLAG_CREATE | PP_FILEOPENFLAG_TRUNCATE, pp::BlockUntilComplete());
 	if (open_result != PP_OK) {
-	    post("error", "File open for write failed");
+	    std::ostringstream s;
+	    s<<"File open for write failed: "<<open_result;
+	    post("error", s.str());
 	    return;
 	}
 

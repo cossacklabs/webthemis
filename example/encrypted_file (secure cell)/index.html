@@ -29,6 +29,11 @@ function handleMessage(message_event) {
 }
 
 function pageDidLoad() {
+     navigator.webkitPersistentStorage.requestQuota(5 * 1024 * 1024,
+      function(bytes) {
+        updateStatus('<b>info:</b>Allocated ' + bytes + ' bytes of persistant storage.');
+      },
+      function(e) { alert('Failed to allocate space') });
     if (themis_secure_cell_sample == null) {
 	updateStatus('<b>info:</b>loading PNACL themis module...');
     } else {
