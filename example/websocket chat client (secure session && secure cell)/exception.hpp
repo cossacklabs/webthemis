@@ -14,6 +14,9 @@
 * limitations under the License.
 */
 
+#ifndef EXCEPTION_HPP
+#define EXCEPTION_HPP
+
 #include <stdexcept>
 
 namespace themis{
@@ -29,3 +32,5 @@ namespace themis{
 	    themis::exception(what){}
     };
 }//themis ns
+
+#endif

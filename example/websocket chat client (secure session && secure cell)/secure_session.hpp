@@ -14,6 +14,9 @@
 * limitations under the License.
 */
 
+#ifdef SECURE_SESSION_HPP
+#define SECURE_SESSION_HPP
+
 #include <cstring>
 #include <vector>
 #include <themis/themis.h>
@@ -98,3 +101,5 @@ namespace themis{
 	bool _res_flag;
     };
 }// ns themis
+
+#endif
