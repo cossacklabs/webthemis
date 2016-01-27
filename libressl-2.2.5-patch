@@ -30,10 +30,10 @@ index 91ae7ce..0cae214 100644
  
  # This must be saved before AC_PROG_CC
 -USER_CFLAGS="$CFLAGS"
-+CC=$PNACL_ROOT$PNACL_TOOLCHAIN/bin/pnacl-clang 
-+CXX=$PNACL_ROOT$PNACL_TOOLCHAIN/bin/pnacl-clang++ 
-+LD=$PNACL_ROOT$PNACL_TOOLCHAIN/bin/pnacl-ld 
-+AR=$PNACL_ROOT$PNACL_TOOLCHAIN/bin/pnacl-ar
++#CC=$PNACL_ROOT$PNACL_TOOLCHAIN/bin/pnacl-clang 
++#CXX=$PNACL_ROOT$PNACL_TOOLCHAIN/bin/pnacl-clang++ 
++#LD=$PNACL_ROOT$PNACL_TOOLCHAIN/bin/pnacl-ld 
++#AR=$PNACL_ROOT$PNACL_TOOLCHAIN/bin/pnacl-ar
 +USER_CFLAGS="-I$PNACL_ROOT/include/pnacl -I$PNACL_ROOT/usr/include/pnacl -DSSIZE_MAX=LONG_MAX -DNO_SYSLOG"
  
  AC_PROG_CC

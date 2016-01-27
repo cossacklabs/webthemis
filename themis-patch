@@ -6,10 +6,10 @@ index ec61828..314ec9c 100644
  # limitations under the License.
  #
  
-+CC=$(PNACL_ROOT)/toolchain/linux_pnacl/bin/pnacl-clang
-+CXX=$(PNACL_ROOT)/toolchain/linux_pnacl/bin/pnacl-clang++
-+LD=$(PNACL_ROOT)/toolchain/linux_pnacl/bin/pnacl-ld
-+AR=$(PNACL_ROOT)/toolchain/linux_pnacl/bin/pnacl-ar
++CC=$(PNACL_ROOT)/$(PNACL_TOOLCHAIN)/bin/pnacl-clang
++CXX=$(PNACL_ROOT)/$(PNACL_TOOLCHAIN)/bin/pnacl-clang++
++LD=$(PNACL_ROOT)/$(PNACL_TOOLCHAIN)/bin/pnacl-ld
++AR=$(PNACL_ROOT)/$(PNACL_TOOLCHAIN)/bin/pnacl-ar
 +CFLAGS=-I$(PNACL_ROOT)/include/pnacl -I$(PNACL_ROOT)/usr/include/pnacl -I/home/andrey/progs/libs/libressl-2.2.3/include -DTHEMIS_PNACL
 +
 +
