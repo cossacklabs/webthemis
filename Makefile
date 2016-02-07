@@ -14,8 +14,6 @@
 # limitations under the License.
 #
 
-PNACL_ROOT ?= /home/andrey/progs/libs/nacl_sdk/pepper_44/
-
 # Project Build flags
 WARNINGS := -Wno-long-long -Wall -Wswitch-enum -pedantic -Werror
 CXXFLAGS := -pthread -std=gnu++98 $(WARNINGS)
