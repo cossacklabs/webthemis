@@ -1,5 +1,16 @@
-# webthemis
-webthemis is PNaCl wrapper for Themis, it is now run as an experimental feature for internal testing
+# WebThemis
+
+WebThemis enables web app developers to build Google Chrome-based applications with strong cryptographic services as provided by [Themis](https://www.github.com/cossacklabs/themis) cryptographic library.
+
+WebThemis provides main Themis cryptographic services: 
+* [Secure Message](https://github.com/cossacklabs/themis/wiki/3.3.1-Secure-Message): a simple encrypted messaging solution  for widest scope of applications. ECC + ECDSA / RSA + PSS + PKCS#8.
+* [Secure Session](https://github.com/cossacklabs/themis/wiki/3.3.2-Secure-Session): session-oriented, forward secrecy messaging solution with better security guarantees, but more demanding infrastructure. ECDH key agreement, ECC & AES encryption.
+* [Secure Cell](https://github.com/cossacklabs/themis/wiki/3.3.3-Secure-Cell): a multi-mode cryptographic container, suitable for storing anything from encrypted files to database records and format-preserved strings. Secure Cell is built around AES in GCM (Token and Seal modes) and CTR (Context imprint mode).
+
+WebThemis, as all Themis components, is free, Apache 2 licensed open-source project.
+
+# Building apps with WebThemis
+
 
 #intro
 
@@ -73,3 +84,25 @@ virtual void HandleMessage(const pp::Var& var_message) {
 }
 ```
 This code realize `HandleMessage` function for Pnacl encrypt/decrypt object by Secure Cell in Seal mode
+
+# Integrating WebThemis with your JS app: tips n tricks
+
+on JS side for handling messages used hendling functions that assosiates with `message` event of `embed` object:
+```
+      <script type="text/javascript">
+        var listener = document.getElementById('listener');
+        listener.addEventListener('message', handleMessage, true);
+      </script>
+      <embed id="secure_cell"
+             width=0 height=0
+             src="secure_cell.nmf"
+             type="application/x-pnacl" />
+
+    function handleMessage(message_event) {
+      alert(message_event.data);
+    }
+```
+for posting messages to PNaCl object use `postMessage` function of `embed` object
+```
+document.getElementById('secure_cell').postMessage(["encrypt", document.getElementById("password").value, document.getElementById("message").value]);
+```
