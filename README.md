@@ -1,6 +1,6 @@
 # WebThemis
 
-WebThemis enables web app developers to build Google Chrome-based applications with strong cryptographic services as provided by [https://www.github.com/cossacklabs/themis](Themis) cryptographic library.
+WebThemis enables web app developers to build Google Chrome-based applications with strong cryptographic services as provided by [Themis](https://www.github.com/cossacklabs/themis) cryptographic library.
 
 WebThemis provides main Themis cryptographic services: 
 * [Secure Message](https://github.com/cossacklabs/themis/wiki/3.3.1-Secure-Message): a simple encrypted messaging solution  for widest scope of applications. ECC + ECDSA / RSA + PSS + PKCS#8.
@@ -9,3 +9,7 @@ WebThemis provides main Themis cryptographic services:
 
 WebThemis, as all Themis components, is free, Apache 2 licensed open-source project.
 
+# Building apps with WebThemis
+
+
+# Integrating WebThemis with your JS app: tips n tricks
