@@ -34,6 +34,8 @@ To install webthemis type in terminal
 cd <your pnacl project folder>
 git clone https://github.com/cossacklabs/webthemis
 cd webthemis
+git submodule init
+git submodule update
 make
 ```
 after build complete you need add to your pnacl project:
