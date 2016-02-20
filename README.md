@@ -41,7 +41,7 @@ make
 after build complete you need add to your pnacl project:
 ```
 CXXFLAGS+= -Iwebthemis/themis/src -Iwebthemis/themis/src/wrappers/themis webthemis/getentropy_pnacl.cc
-LDFLACS+= -Lwebthemis/build -lthemis -lsoter -lcrypto -lnacl_io
+LDFLACS+= -Lwebthemis/build -lthemis -lsoter -lcrypto -lnacl_io ---pnacl-exceptions=sjlj
 ```
 !!!! important
 Any cryptography computation need to use random numbers generators. To enable using `/dev/urandom` in your project You need ti initialise `nacl_io` library by adding
