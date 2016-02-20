@@ -5,6 +5,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "themis/src/wrappers/themis/themispp/exception.hpp"
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -30,13 +32,15 @@ int getentropy(void *buf, size_t len)
 	FILE* fd = fopen("/dev/urandom", "r");
 	if (!fd) {
 	    fprintf(stderr, "Unable to open /dev/urandom.\n");
-	    return -1;
+	    throw themispp::urandom_not_accessible_exception_t();
+//	    return -1;
 	}
 	ssize_t bytes = fread(buf, 1, len, fd);
 	if (bytes != len) {
 	    fprintf(stderr, "Unable to read %d bytes.\n", len);
 	    fclose(fd);
-	    return -1;
+	    throw themispp::urandom_not_accessible_exception_t();
+//	    return -1;
 	}
 	fclose(fd);
 	if (gotdata((char*)buf, len) == 0) {
@@ -44,7 +48,8 @@ int getentropy(void *buf, size_t len)
 		return 0;		/* satisfied */
 	}
 	fprintf(stderr, "other error");
-	return -1;
+	throw themispp::urandom_not_accessible_exception_t();
+//	return -1;
 }
 
 #ifdef __cplusplus

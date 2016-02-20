@@ -38,7 +38,7 @@ clean:
 	$(RM) secure_message.pexe secure_message.bc
 
 secure_message.bc: secure_message.cc
-	$(PNACL_CXX) -o $@ $< -O2 $(CXXFLAGS) $(LDFLAGS) getentropy_pnacl.cc
+	$(PNACL_CXX) -o $@ $< -O2 $(CXXFLAGS) $(LDFLAGS) ../../getentropy_pnacl.cc
 
 secure_message.pexe: secure_message.bc
 	$(PNACL_FINALIZE) -o $@ $<

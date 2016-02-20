@@ -38,7 +38,7 @@ clean:
 	$(RM) secure_cell.pexe secure_cell.bc
 
 secure_cell.bc: secure_cell.cc
-	$(PNACL_CXX) -o $@ $< -O2 $(CXXFLAGS) $(LDFLAGS) getentropy_pnacl.cc
+	$(PNACL_CXX) -o $@ $< -O2 $(CXXFLAGS) $(LDFLAGS) ../../getentropy_pnacl.cc
 
 secure_cell.pexe: secure_cell.bc
 	$(PNACL_FINALIZE) -o $@ $<

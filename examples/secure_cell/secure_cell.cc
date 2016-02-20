@@ -63,6 +63,8 @@ class secure_cell_instance : public pp::Instance {
 	    PostMessage(std::string("undefined command"));
     }catch(themispp::exception_t& e){
 	PostMessage(e.what());
+    }catch(themispp::urandom_not_accessible_exception_t& e){
+	PostMessage(e.what());
     }
   }
 };
