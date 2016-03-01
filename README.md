@@ -13,26 +13,33 @@ WebThemis, as all Themis components, is free, Apache 2 licensed open-source proj
 
 # Building apps with WebThemis
 
-
-#intro
+## Intro
 
 Native Client (NaCl) is a sandboxing technology for running a subset of Intel x86/x86-64, ARM or MIPSnative code in a sandbox. It allows safely running native code from a web browser, independent of the user operating system, allowing web-based applications to run at near-native speeds.
 
 PNaCl solves the portability problem by splitting the compilation process into two parts:
 
-1. compiling the source code to a bitcode executable (pexe), and
+1. compiling the source code to a bytecode executable (pexe), and
 2. translating the bitcode to a host-specific executable as soon as the module loads in the browser but before any code execution.
 
-# create pnacl object
+## Quickstart
 
-## Download and install the Native Client SDK
+### Download and install the Native Client SDK
 
-Follow the instructions on the Download page to download and install the Native Client SDK.
+Follow the [instructions on the Download page](https://developer.chrome.com/native-client/sdk/download) to download and install the Native Client SDK.
 
-## install webthemis
+### Install WebThemis
 
-To install webthemis type in terminal
-```
+WebThemis is a special wrapper, which builds and installs:
+- Themis core library
+- C++ Wrapper
+- Themis dependencies (libcrypto from libressl, only patches, suppose you've got libssl-dev package already)
+
+into PNaCl library, usable in a PNaCl project.
+
+To install WebThemis do the following: 
+
+```bash
 cd <your pnacl project folder>
 git clone https://github.com/cossacklabs/webthemis
 cd webthemis
@@ -40,30 +47,37 @@ git submodule init
 git submodule update
 make
 ```
-after build complete you need add to your pnacl project:
-```
+
+after build completes, you need add following variables to your PNaCl project:
+
+```bash
 CXXFLAGS+= -Iwebthemis/themis/src -Iwebthemis/themis/src/wrappers/themis webthemis/getentropy_pnacl.cc
 LDFLACS+= -Lwebthemis/build -lthemis -lsoter -lcrypto -lnacl_io ---pnacl-exceptions=sjlj
 ```
-!!!! important
-Any cryptography computation need to use random numbers generators. To enable using `/dev/urandom` in your project You need ti initialise `nacl_io` library by adding
-```
+
+**IMPORTANT NOTE**: Any cryptographic computations need to use random number generators. To enable using `/dev/urandom` in your project you need to initialise `nacl_io` library by adding:
+
+```cpp
 #include "nacl_io/nacl_io.h"
 ```
-to header of Your main pnacl object file and
-```
+
+to the header of your main PNaCl project and:
+
+```cpp
 nacl_io_init_ppapi(instance, pp::Module::Get()->get_browser_interface()); 
 ```
-to Your pnacl object instance constructor.
 
-## Communication between JavaScript and Native Client modules
+to your PNaCl object instance constructor.
+
+### Communication between JavaScript and Native Client modules
 
 The Native Client programming model supports bidirectional communication between JavaScript and the Native Client module. Both sides can initiate and respond to messages. In all cases, the communication is asynchronous.
 
-### communication on C++ side
+#### Communication on C++ side
 
-most of communication is realised by `HandleMessage` function, for example:
-```
+Most of communication is realised by `HandleMessage` function, for example:
+
+```cpp
 virtual void HandleMessage(const pp::Var& var_message) {
     if (!var_message.is_string()){
        PostMessage("error unsupported format");
@@ -87,12 +101,14 @@ virtual void HandleMessage(const pp::Var& var_message) {
     }
 }
 ```
-This code realize `HandleMessage` function for Pnacl encrypt/decrypt object by Secure Cell in Seal mode
 
-# Integrating WebThemis with your JS app: tips n tricks
+This code implements `HandleMessage` function for PNaCL encrypt/decrypt object using [Secure Cell in Seal mode](https://github.com/cossacklabs/themis/wiki/3.3.3-Secure-Cell).
 
-on JS side for handling messages used hendling functions that assosiates with `message` event of `embed` object:
-```
+#### Communication on JS side
+
+On JS side, handling messages uses handling functions that assosiate with `message` event of `embed` object:
+
+```js
       <script type="text/javascript">
         var listener = document.getElementById('listener');
         listener.addEventListener('message', handleMessage, true);
@@ -106,7 +122,14 @@ on JS side for handling messages used hendling functions that assosiates with `m
       alert(message_event.data);
     }
 ```
+
 for posting messages to PNaCl object use `postMessage` function of `embed` object
-```
+
+```js
 document.getElementById('secure_cell').postMessage(["encrypt", document.getElementById("password").value, document.getElementById("message").value]);
 ```
+
+# Examples? 
+
+Please refer to [examples folder](https://github.com/cossacklabs/webthemis/tree/master/examples) for examples. Apart from that, soon we'll publish two large-scale test projects we've built with WebThemis. 
+
