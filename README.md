@@ -1,3 +1,5 @@
+![WebThemis](ghlogo.png)
+
 # WebThemis
 
 WebThemis enables web app developers to build Google Chrome-based applications with strong cryptographic services as provided by [Themis](https://www.github.com/cossacklabs/themis) cryptographic library.
