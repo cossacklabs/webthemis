@@ -131,5 +131,5 @@ document.getElementById('secure_cell').postMessage(["encrypt", document.getEleme
 
 # Examples? 
 
-Please refer to [examples folder](https://github.com/cossacklabs/webthemis/tree/master/examples) for examples. Apart from that, soon we'll publish two large-scale test projects we've built with WebThemis. 
-
+- Please refer to [examples folder](https://github.com/cossacklabs/webthemis/tree/master/examples) for examples. 
+- Take a look at 0fc, anonymous end-to-end webchat we've created with WebThemis [github repo](https://github.com/cossacklabs/0fc), [blog post](https://cossacklabs.com/building-endtoend-webchat.html)
