@@ -51,7 +51,7 @@ themis_:
 	mkdir -p build
 ifeq (,$(wildcard build/libthemis.a))
 	cd themis && patch -p1 <../themis-patch &&\
-	PNACL_ROOT=$(PNACL_ROOT) PNACL_TOOLCHAIN=$(PNACL_TOOLCHAIN) make themis_static
+	PNACL_ROOT=$(PNACL_ROOT) PNACL_TOOLCHAIN=$(PNACL_TOOLCHAIN) make SECURE_COMPARATOR=$(SECURE_COMPARATOR) themis_static
 	mv themis/build/libsoter.a build
 	mv themis/build/libthemis.a build
 endif
