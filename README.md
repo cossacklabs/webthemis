@@ -133,3 +133,4 @@ document.getElementById('secure_cell').postMessage(["encrypt", document.getEleme
 
 - Please refer to [examples folder](https://github.com/cossacklabs/webthemis/tree/master/examples) for examples. 
 - Take a look at 0fc, anonymous end-to-end webchat we've created with WebThemis [github repo](https://github.com/cossacklabs/0fc), [blog post](https://cossacklabs.com/building-endtoend-webchat.html)
+- Take a look at sesto, web secret storage tool, webthemis + pythemis [github](https://github.com/cossacklabs/sesto), [blog post](https://cossacklabs.com/presenting-sesto.html)
